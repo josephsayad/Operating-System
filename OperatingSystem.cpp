@@ -19,8 +19,6 @@ void OperatingSystem::runSimulation() {
 
   manager_.setMemoryCapacity(memorySize_);
   manager_.initializeRAM();
-  manager_.memorySnapshot();
-  cout << "\n";
   
   listen();
 }
@@ -56,6 +54,11 @@ void OperatingSystem::printCompSpecs() {
 void OperatingSystem::userQueries() {
   RAMQuery();
   IOQueries();
+
+  /* IO DEVICE SET-UP */
+
+  setupPrinters();
+  setupDisks();
 
   printCompSpecs();
 }
@@ -115,8 +118,8 @@ int OperatingSystem::queryHelper(string& userInput, int& number) {
     try {
       number = stoi(userInput);
       
-      if (number < 0) {
-  	    cout << "[os] Invalid entry: range from 0 to N.\n>\t"; 
+      if (number <= 0) {
+  	    cout << "[os] Invalid entry: range from 1 to N.\n>\t"; 
   	    continue; 
       } else {
         return number;
@@ -135,6 +138,32 @@ int OperatingSystem::queryHelper(string& userInput, int& number) {
     }
   }
 }
+
+/* IO DEVICE SETUP */
+
+void OperatingSystem::setupPrinters() { 
+  Printer *pointer = nullptr;
+
+  for (int i = 0; i < numberOfPrinters_; ++i) {
+    pointer = new Printer();
+    printers_.push_back(*pointer);
+  }
+
+  pointer = nullptr;
+}
+
+void OperatingSystem::setupDisks() { 
+  Disk *pointer = nullptr;
+
+  for (int i = 0; i < numberOfDisks_; ++i) {
+    pointer = new Disk();
+    disks_.push_back(*pointer);
+  }
+
+  pointer = nullptr;
+}
+
+/* IO DEVICE SETUP */
 
 void OperatingSystem::listen() {
   cout << "[os] Listening for user commands. Enter exit() to terminate program.\n>\t";
@@ -184,24 +213,121 @@ void OperatingSystem::commandParse(string (&command) [4], string& typeOf) {
   // ONE PARAM BELOW ---------------- Implement HANDLE & FUNCTION
 
   else if (typeOf == "oneParam") {
-    if (command[0] == "D") {
-      cout << "[os] Disk #n finished work! Error handle here\n";  
+    
+    if (command[0] == "d") {
+      
+      int number = 0;
+      
+      try {
+        number = stoi(command[1]);
+        
+        if (number >= 0 && number < numberOfDisks_) {
+          processUsingCPURequestsDisk(number);
+        }
+
+        else {
+          cout << "[os] Invalid entry: out of disk range.\n";
+        }
+      }
+
+      catch(invalid_argument& e) {
+        cout << "[os] Invalid entry: disk number should be an integer value.\n";
+      }
+
+      catch(out_of_range& e) {
+        cout << "[os] Invalid entry: out of disk range.\n";
+      }
     }
 
-    else if (command[0] == "d") {
-      cout << "[os] Process using CPU requests disk #N. Error handle here!\n";  
+    else if (command[0] == "D") {
+      int number = 0;
+      
+      try {
+        number = stoi(command[1]);
+        
+        if (number >= 0 && number < numberOfDisks_) {
+          diskRequestComplete(number);
+        }
+
+        else {
+          cout << "[os] Invalid entry: out of disk range.\n";
+        }
+      }
+
+      catch(invalid_argument& e) {
+        cout << "[os] Invalid entry: disk number should be an integer value.\n";
+      }
+
+      catch(out_of_range& e) {
+        cout << "[os] Invalid entry: out of disk range.\n";
+      }
     }
   
-    else if (command[0] == "P") {
-      cout << "[os] Printer #n finished work! Error handle here\n";  
+    else if (command[0] == "p") {
+      
+      int number = 0;
+      
+      try {
+        number = stoi(command[1]);
+        
+        if (number >= 0 && number < numberOfPrinters_) {
+          processUsingCPURequestsPrinter(number);
+        }
+
+        else {
+          cout << "[os] Invalid entry: out of printer range.\n";
+        }
+      }
+
+      catch(invalid_argument& e) {
+        cout << "[os] Invalid entry: printer number should be an integer value.\n";
+      }
+
+      catch(out_of_range& e) {
+        cout << "[os] Invalid entry: out of printer range.\n";
+      }
     }
 
-    else if (command[0] == "p") {
-      cout << "[os] Process using CPU requests printer #N. Error handle here!\n";  
+    else if (command[0] == "P") {
+      int number = 0;
+      
+      try {
+        number = stoi(command[1]);
+        
+        if (number >= 0 && number < numberOfPrinters_) {
+          printerRequestComplete(number);
+        }
+
+        else {
+          cout << "[os] Invalid entry: out of printer range.\n";
+        }
+      }
+
+      catch(invalid_argument& e) {
+        cout << "[os] Invalid entry: printer number should be an integer value.\n";
+      }
+
+      catch(out_of_range& e) {
+        cout << "[os] Invalid entry: out of printer range.\n";
+      }
     }
 
     else if (command[0] == "S") {
-      cout << "[os] Snapshot command. Error handle here!\n";
+      if (command[1] == "r") {
+        scheduler_.readyQueueSnapshot();
+      } 
+
+      else if (command[1] == "i") {
+        printIOSnapshot();
+      } 
+
+      else if (command[1] == "m") {
+        manager_.memorySnapshot();
+      } 
+
+      else {
+        cout << "[os] Invalid snapshot parameter. Did you mean 'r', 'i', or 'm'?\n";  
+      }
     }
 
     else {
@@ -219,14 +345,14 @@ void OperatingSystem::commandParse(string (&command) [4], string& typeOf) {
 
     else {
       terminateProcess();
-      scheduler_.readyQueueSnapshot();
+      // scheduler_.readyQueueSnapshot();
     }
   }
 
   // WEIRD Input -----------------
 
   else {
-    cout << "Error: Invalid command. Whitespace is not allowed before commands.\n";
+    cout << "[os] Invalid command. Whitespace is not allowed before commands.\n";
   }
 }
 
@@ -282,7 +408,7 @@ void OperatingSystem::scheduleProcess(ProcessNode* process) {
   
   else {
     scheduler_.eval(process);
-    scheduler_.readyQueueSnapshot();
+    // scheduler_.readyQueueSnapshot();
   }
 }
 
@@ -297,4 +423,129 @@ void OperatingSystem::terminateProcess() {
   else {
     cout << "[memory manager] No memory to deallocate.\n";
   }
+}
+
+/* IO Functions */
+
+void OperatingSystem::processUsingCPURequestsPrinter(int number) {
+  ProcessNode *processPtr = scheduler_.toIODevice();
+
+  if (processPtr == nullptr) { /* NO PROCESS USING CPU: IGNORE */ }
+
+  else if (processPtr != nullptr) {
+    // cout << "printer # " << number << endl;
+    printers_.at(number).push(processPtr);     
+    // cout << *processPtr << endl;
+    
+    // printerQueueSnapshot();
+  }
+}
+
+void OperatingSystem::printerRequestComplete(int number) {
+  if (!printers_.at(number).isEmpty()) {
+    // cout << "Hello printer " << number << endl;
+    
+    ProcessNode *process = nullptr;
+
+    /* Step 1: Point to process and pop nullptr from printer queue */
+
+    process = printers_.at(number).processUsingPrinter();
+    // cout << "Process to remove from printer " << *process << endl;
+
+    /* in pop function, set pointer to nullptr */
+    printers_.at(number).pop();
+ 
+    //  Step 2: Let scheduler evaluate and push to either CPU or queue 
+
+    scheduler_.eval(process);
+    // scheduler_.readyQueueSnapshot();
+
+  } else {
+    cout << "Printer " << number << " is empty." << endl;
+  }
+}
+
+void OperatingSystem::printerQueueSnapshot() {
+  cout << "\n";
+  cout << setfill('-') << setw(25) << " ";
+  cout << "\n";
+  
+  for (int i = 0; i < printers_.size(); ++i) {
+    if (!printers_.at(i).isEmpty()) {
+      cout << "Printer #" << i << " :: BUSY\n";
+      printers_.at(i).displayQueue();
+    } else {
+      cout << "Printer #" << i << " :: NOT BUSY\n";
+    }
+  }
+
+  cout << setfill('-') << setw(25) << " ";
+  cout << "\n";
+}
+
+void OperatingSystem::processUsingCPURequestsDisk(int number) {
+  ProcessNode *processPtr = scheduler_.toIODevice();
+
+  if (processPtr == nullptr) { /* NO PROCESS USING CPU: IGNORE */ }
+
+  else if (processPtr != nullptr) {
+    // cout << "disk # " << number << endl;
+    disks_.at(number).push(processPtr);     
+    // cout << *processPtr << endl;
+    // printerQueueSnapshot();
+  }
+}
+
+void OperatingSystem::diskRequestComplete(int number) {
+  if (!disks_.at(number).isEmpty()) {
+    // cout << "Hello disk " << number << endl;
+    
+    ProcessNode *process = nullptr;
+
+    /* Step 1: Point to process and pop nullptr from printer queue */
+
+    process = disks_.at(number).processUsingDisk();
+    // cout << "Process to remove from disk " << *process << endl;
+
+    /* in pop function, set pointer to nullptr */
+    disks_.at(number).pop();
+ 
+    //  Step 2: Let scheduler evaluate and push to either CPU or queue 
+
+    scheduler_.eval(process);
+    // scheduler_.readyQueueSnapshot();
+
+  } else {
+    cout << "Disk " << number << " is empty." << endl;
+  }
+}
+
+void OperatingSystem::diskQueueSnapshot() {
+  cout << setfill('-') << setw(25) << " ";
+  cout << "\n";
+  
+  for (int i = 0; i < disks_.size(); ++i) {
+    if (!disks_.at(i).isEmpty()) {
+      cout << "Disk #" << i << " :: BUSY\n";
+      disks_.at(i).displayQueue();
+    } else {
+      cout << "Disk #" << i << " :: NOT BUSY\n";
+    }
+  }
+
+  cout << setfill('-') << setw(25) << " ";
+  cout << "\n\n";
+}
+
+void OperatingSystem::printIOSnapshot() {
+  cout << "\n";
+  cout << setfill('-') << setw(56) << " ";
+  cout << "\n|";
+
+  cout << setfill(' ') <<  right << setw(30) << "IO DEVICES";
+  cout << setfill(' ') << setw(25) << "|\n";
+  cout << setfill('-') << setw(56) << " ";
+
+  printerQueueSnapshot();
+  diskQueueSnapshot();
 }

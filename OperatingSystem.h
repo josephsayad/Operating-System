@@ -13,11 +13,14 @@
 #include <iomanip>
 #include <stdexcept>
 #include <sstream>
+#include <memory>
 
 #include "Node.h"
 
 #include "MemoryManagement.h"
 #include "ShortTermScheduler.h"
+#include "Printer.h"
+#include "Disk.h"
 
 using namespace std;
 
@@ -49,6 +52,9 @@ class OperatingSystem {
 
   MemoryManagement manager_;
   ShortTermScheduler scheduler_;
+  
+  vector<Printer> printers_;
+  vector<Disk> disks_;
 
   /* Private Helper Methods */
 
@@ -58,12 +64,31 @@ class OperatingSystem {
 
   int queryHelper(string& userInput, int& number);
 
+  /* IO DEVICE FUNCTIONS -------- */
+
+  void setupPrinters();
+  // --
+  void processUsingCPURequestsPrinter(int number);
+  void printerRequestComplete(int number);
+  // --
+  void printerQueueSnapshot();
+
+  void setupDisks();
+  // --
+  void processUsingCPURequestsDisk(int number);
+  void diskRequestComplete(int number);
+  // --
+  void diskQueueSnapshot();
+
+  /* IO DEVICE FUNCTIONS -------- */
+
   void listen();
   void commandParse(string (&command) [4], string& typeOf);
   void twoParamHandle(string (&command) [4]);
 
   void scheduleProcess(ProcessNode* process);
   void terminateProcess();
+  void printIOSnapshot();
    
 };
 

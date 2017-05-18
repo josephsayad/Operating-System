@@ -4,7 +4,8 @@
 using namespace std; 
 
 int main() {
-  OperatingSystem controllerOne;
-  controllerOne.runSimulation();
+  OperatingSystem controller;
+  controller.runSimulation();
+  
   return 0;
 }

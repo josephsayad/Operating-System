@@ -1,37 +1,37 @@
 //
-//  Printer.cpp
+//  Disk.cpp
 //  Assignment I
 //
-//  Created by Joseph Sayad on 05/15/17.
+//  Created by Joseph Sayad on 05/17/17.
 //  Copyright © 2016 Joseph Sayad. All rights reserved.
 //
 
-#include "Printer.h"
+#include "Disk.h"
 
 /* Explicitly-defined default constructor */
 
-Printer::Printer() {
-  // cout << "Printer exists.\n";
+Disk::Disk() {
+  // cout << "Disk exists.\n";
 }
 
 /* Queue Functions */
 
-void Printer::push(ProcessNode* process) {
+void Disk::push(ProcessNode* process) {
   ptrToProcess_.push_back(process);
 }
 
-void Printer::pop() {
+void Disk::pop() {
   if (!ptrToProcess_.empty()) {
     ptrToProcess_.front() = nullptr;
     ptrToProcess_.pop_front();
   } 
 
   else {
-    cout << "\n[os] No process found in PRINTER queue.\n";
+    cout << "\n[os] No process found in DISK queue.\n";
   }
 }
 
-ProcessNode* Printer::processUsingPrinter() {
+ProcessNode* Disk::processUsingDisk() {
   if (!ptrToProcess_.empty()) {
     return ptrToProcess_.front();
   } 
@@ -41,29 +41,27 @@ ProcessNode* Printer::processUsingPrinter() {
   }
 }
 
-bool Printer::isEmpty() {
+bool Disk::isEmpty() {
   return ptrToProcess_.empty();
 }
 
-int Printer::size() {
+int Disk::size() {
   return ptrToProcess_.size();
 }
 
-/* Convenience Function */
-
-void Printer::displayQueue() {
+void Disk::displayQueue() {
   if(ptrToProcess_.empty()) {
-    cout << "PRINTER :: empty\n";
+    cout << "DISK :: empty\n";
   } 
 
   else {
-    printerQueue::iterator it = ptrToProcess_.begin();
+    diskQueue::iterator it = ptrToProcess_.begin();
     
     for(auto it2 = ptrToProcess_.begin(); it2 != ptrToProcess_.end(); ++it2) {
       if (it == it2) {
-        cout << *(*it2) << " :: USING PRINTER\n";
+        cout << *(*it2) << " :: USING DISK\n";
       } else {
-        cout << *(*it2) << " :: WAITING ON PRINTER\n";      
+        cout << *(*it2) << " :: WAITING ON DISK\n";      
       }
     }
   }  

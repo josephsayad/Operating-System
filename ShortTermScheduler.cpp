@@ -101,9 +101,50 @@ void ShortTermScheduler::terminate(unsigned int& tPID) {
   }
 }
 
+/* IO QUEUE FUNCTIONS START */
+
+ProcessNode* ShortTermScheduler::toIODevice() {
+  ProcessNode *tmp = nullptr;
+
+  if (processUsingCPU_ == nullptr) {
+    cout << "[scheduler] CPU is not in use. Use 'A' to create a process.\n";
+  }
+
+  else if (processUsingCPU_ != nullptr) {
+    
+    /* Delete contents of terminated process and 
+     * set pointer to null.
+    */
+    
+    tmp = processUsingCPU_; 
+    processUsingCPU_ = nullptr;
+
+    for (int i = readyQueue_.size() - 1; i >= 0; --i) {
+      if (!readyQueue_.at(i).empty()) {
+
+        /* Point to new content.
+         * Set pointer in queue to null.
+         * Pop dangling pointer.
+         */
+
+        processUsingCPU_ = readyQueue_.at(i).front();
+        readyQueue_.at(i).front() = nullptr;
+        readyQueue_.at(i).pop_front();
+        break;
+      }
+    }
+  }
+
+  return tmp;
+}
+
+/* IO QUEUE FUNCTIONS END */
+
 /* Convenience functions */
 
 void ShortTermScheduler::readyQueueSnapshot() {
+  cout << "\n";
+
   if (processUsingCPU_ != nullptr) { 
 
     int localPID = processUsingCPU_->PID;
@@ -121,20 +162,22 @@ void ShortTermScheduler::readyQueueSnapshot() {
     cout << setfill('-') << setw(56) << " ";
     cout << "\n|";
 
-    cout << setfill(' ') <<  right << setw(28) << "CPU :: empty";
-    cout << setfill(' ') << setw(26) << "|\n";
+    cout << setfill(' ') <<  right << setw(30) << "CPU :: empty";
+    cout << setfill(' ') << setw(25) << "|\n";
     cout << setfill('-') << setw(56) << " ";
     cout << "\n";    
   }
 
   for (int i = readyQueue_.size() - 1; i >= 0; --i) {
-  	cout << i << " :: ";
+  	cout << "Level " << i << " :: ";
 
     for (auto it = readyQueue_.at(i).begin(); it != readyQueue_.at(i).end(); ++it) {
       cout << "P" << (*it)->PID << " <- ";
-    } cout << "[x]";
+    } cout << "[end of list]";
 
   	if (i != 0) { cout << "\n|\n"; }
   	else { cout << "\n"; }
   }
+
+  cout << "\n";
 }

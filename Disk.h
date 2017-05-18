@@ -1,13 +1,13 @@
 //
-//  Printer.h
+//  Disk.h
 //  Assignment I
 //
-//  Created by Joseph Sayad on 05/15/17.
+//  Created by Joseph Sayad on 05/17/17.
 //  Copyright © 2016 Joseph Sayad. All rights reserved.
 //
 
-#ifndef PRINTER_H
-#define PRINTER_H
+#ifndef DISK_H
+#define DISK_H
 
 #include <iostream>
 #include <list>
@@ -16,15 +16,15 @@
 
 using namespace std;
 
-typedef list<ProcessNode*> printerQueue;
+typedef list<ProcessNode*> diskQueue;
 
-class Printer {
-  
+class Disk {
+
   public: 
 
   /* Explicitly-defined default constructor */
 
-  Printer();
+  Disk();
 
   /* Queue Functions */
 
@@ -32,7 +32,7 @@ class Printer {
   int size();
   void push(ProcessNode* process);
   void pop();
-  ProcessNode* processUsingPrinter();
+  ProcessNode* processUsingDisk();
 
   /* Convenience Function */
 
@@ -42,7 +42,7 @@ class Printer {
     
   /* Private Data Members */
   
-  printerQueue ptrToProcess_;
+  diskQueue ptrToProcess_;
 
 };
 

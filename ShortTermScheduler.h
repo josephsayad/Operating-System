@@ -37,6 +37,10 @@ class ShortTermScheduler {
   void push(ProcessNode* newProcess);
   void terminate(unsigned int& tPID);
 
+  /* IO-related functions */
+
+  ProcessNode* toIODevice();
+
   /* Convenience functions */
 
   void readyQueueSnapshot();

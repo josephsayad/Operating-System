@@ -6,7 +6,7 @@ CFLAGS = -c -Wall
 # SOURCES includes all the .cpp files to compile.
 
 EXECUTABLE_NAME = SimulateOS
-SOURCES = main.cpp OperatingSystem.cpp MemoryManagement.cpp ShortTermScheduler.cpp Printer.cpp
+SOURCES = main.cpp OperatingSystem.cpp MemoryManagement.cpp ShortTermScheduler.cpp Printer.cpp Disk.cpp
 
 OBJECTS = $(SOURCES:.cpp=.o)
 

@@ -24,7 +24,10 @@ A FIFO abstract data type - such as a queue - would be a good choice to hold pro
 
 ### IO Devices 
 
+Pushing from CPU to Printer
 
+Step 1: Request that scheduler returns process currently using CPU.
+Step 2: Push process to one of the N printers.
 
 ## How To Compile the Program
 

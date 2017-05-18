@@ -12,6 +12,8 @@
 
 MemoryManagement::MemoryManagement() : PID_COUNTER(1) {}
 
+/* Explicitly-defined default destructor */
+
 MemoryManagement::~MemoryManagement() {}
 
 /* Memory Management Functions */
@@ -33,7 +35,7 @@ ProcessNode* MemoryManagement::newProcess(unsigned int& priority, long& size) {
   if (findHole(size, pStartAddress, holePos)) {
     return (createPCB(priority, size, pStartAddress, holePos));
   } else {
-    cout << "[memory manager] Memory capacity has been met. Use 't' to terminate processes, and free up space.\n";
+    cout << "[memory manager] No memory capacity for process of size " << size << ". Try 't' for more space.\n";
     
     ProcessNode* nullP = nullptr; // is this ok?
     return nullP;
@@ -71,7 +73,7 @@ void MemoryManagement::storeProcessInRAM(MemoryNode& node, ProcessStore::iterato
     holePos->startAddress = ++node.endAddress;
   }
 
-  memorySnapshot();
+  // memorySnapshot();
 }
 
 void MemoryManagement::evalMemory(unsigned int& targetPID) {
@@ -89,7 +91,7 @@ void MemoryManagement::evalMemory(unsigned int& targetPID) {
     after = nodeToRemove->typeOf;
 
     nodeToRemove--; // Iterator points to node to deallocate from RAM.
-    cout << "HELLOONE!\n";
+    // cout << "HELLOONE!\n";
   } 
 
   // last node in RAM
@@ -100,7 +102,7 @@ void MemoryManagement::evalMemory(unsigned int& targetPID) {
     before = nodeToRemove->typeOf;
 
     nodeToRemove++; // Iterator points to node to deallocate from RAM.
-    cout << "HELLOFOUR!\n";
+    // cout << "HELLOFOUR!\n";
   }
 
   // 1 process node in ram, 0 holes 
@@ -108,7 +110,7 @@ void MemoryManagement::evalMemory(unsigned int& targetPID) {
     before = "null";
     after = "null";
 
-    cout << "HELLOTWO\n";
+    // cout << "HELLOTWO\n";
   }
 
   // middle node in RAM
@@ -121,7 +123,7 @@ void MemoryManagement::evalMemory(unsigned int& targetPID) {
     after = nodeToRemove->typeOf;
     nodeToRemove--; // Iterator points to node to deallocate from RAM.
 
-    cout << "HELLOTHREE\n";
+    // cout << "HELLOTHREE\n";
   }
 
   releaseMemory(before, after, nodeToRemove);
@@ -241,7 +243,7 @@ void MemoryManagement::releaseMemory(string& nodeBefore, string& nodeAfter, Proc
     }
   }
 
-  memorySnapshot();
+  // memorySnapshot();
 }
 
 /* Accessor Functions */
@@ -257,6 +259,7 @@ void MemoryManagement::setMemoryCapacity(long& initCapacity) {
 /* Convenience Functions */
 
 void MemoryManagement::memorySnapshot() const {
+  cout << "\n";
   cout << setfill('-') << setw(56) << " ";
   cout << "\n|";
 
@@ -275,7 +278,7 @@ void MemoryManagement::memorySnapshot() const {
   }
 
   cout << setfill('-') << setw(56) << " ";
-  cout << "\n";
+  cout << "\n\n";
 }
 
 /* Private Data Helpers */ 
