@@ -8,13 +8,11 @@
 
 #include "Printer.h"
 
-/* Explicitly-defined default constructor */
+/* Explicitly-Defined Default Constructor */
 
-Printer::Printer() {
-  // cout << "Printer exists.\n";
-}
+Printer::Printer() {}
 
-/* Queue Functions */
+/* Printer Queue Functions */
 
 void Printer::push(ProcessNode* process) {
   ptrToProcess_.push_back(process);

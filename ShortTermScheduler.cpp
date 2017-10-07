@@ -8,15 +8,17 @@
 
 #include "ShortTermScheduler.h"
 
-/* Explicitly-defined default constructor */
+/* Explicitly-Defined Default Constructor */
 
 ShortTermScheduler::ShortTermScheduler() : processUsingCPU_(nullptr) {
   createReadyQueue();
 }
 
+/* Explicitly-Defined Default Destructor */
+
 ShortTermScheduler::~ShortTermScheduler() {}
 
-/* Set-up functions */
+/* CPU Scheduler Functions */
 
 void ShortTermScheduler::createReadyQueue() {
   readyQueue_.push_back(zero_);
@@ -101,7 +103,7 @@ void ShortTermScheduler::terminate(unsigned int& tPID) {
   }
 }
 
-/* IO QUEUE FUNCTIONS START */
+/* IO Function */
 
 ProcessNode* ShortTermScheduler::toIODevice() {
   ProcessNode *tmp = nullptr;
@@ -137,8 +139,6 @@ ProcessNode* ShortTermScheduler::toIODevice() {
 
   return tmp;
 }
-
-/* IO QUEUE FUNCTIONS END */
 
 /* Convenience functions */
 

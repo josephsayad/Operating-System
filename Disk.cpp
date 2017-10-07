@@ -8,13 +8,11 @@
 
 #include "Disk.h"
 
-/* Explicitly-defined default constructor */
+/* Explicitly-Defined Default Constructor */
 
-Disk::Disk() {
-  // cout << "Disk exists.\n";
-}
+Disk::Disk() {}
 
-/* Queue Functions */
+/* Disk Queue Functions */
 
 void Disk::push(ProcessNode* process) {
   ptrToProcess_.push_back(process);
@@ -48,6 +46,8 @@ bool Disk::isEmpty() {
 int Disk::size() {
   return ptrToProcess_.size();
 }
+
+/* Convenience Function */
 
 void Disk::displayQueue() {
   if(ptrToProcess_.empty()) {

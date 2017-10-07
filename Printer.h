@@ -22,27 +22,47 @@ class Printer {
   
   public: 
 
-  /* Explicitly-defined default constructor */
+  /* Explicitly-Defined Default Constructor */
 
   Printer();
 
-  /* Queue Functions */
+  /* Printer Queue Functions */
 
   bool isEmpty();
+  // Postcondition: Returns 1 if ptrToProcess_ is empty().
+
   int size();
+  // Postcondition: Returns the number of elements ptrToProcess_
+  // contains.
+
   void push(ProcessNode* process);
+  // Precondition: Accepts an object that points to a ProcessNode.
+  // Postcondition: Pushes the pointer into a doubly linked-list 
+  // of ProcessNode pointers.
+
   void pop();
+  // Postcondition: Pops the first pointer of the doubly linked-list 
+  // of ProcessNode pointers. An underlying pop_front() method is 
+  // used.
+
   ProcessNode* processUsingPrinter();
+  // Postcondition: Returns a reference to the first element of 
+  // ptrToProcess_.
 
   /* Convenience Function */
 
   void displayQueue();
+  // Postcondition: Dereferences, and prints contents of ptrToProcess_.
+  // Objects of type ProcessNode - that each pointer references - is 
+  // printed to console.
 
   private: 
     
   /* Private Data Members */
   
   printerQueue ptrToProcess_;
+  // Note: List of pointers to objects of type ProcessNode. 
+  // Each printer has its own queue.
 
 };
 

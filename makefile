@@ -1,6 +1,6 @@
 CC = g++
 LFLAGS = -std=c++11
-CFLAGS = -c -Wall
+CFLAGS = -c
 
 # EXECUTABLE_NAME is the name of the program to run.
 # SOURCES includes all the .cpp files to compile.

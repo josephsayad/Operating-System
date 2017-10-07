@@ -8,11 +8,11 @@
 
 #include "OperatingSystem.h"
 
-/* Explicitly-defined default constructor */
+/* Explicitly-Defined Default Constructor */
 
 OperatingSystem::OperatingSystem() : MAX_MEMORY(4000000000) {}
 
-/* Execute OS */
+/* OS Simulation Execution Function */
 
 void OperatingSystem::runSimulation() {
   userQueries();
@@ -51,11 +51,11 @@ void OperatingSystem::printCompSpecs() {
 
 /* Private Helper Methods */
 
+/* Query Functions */
+
 void OperatingSystem::userQueries() {
   RAMQuery();
   IOQueries();
-
-  /* IO DEVICE SET-UP */
 
   setupPrinters();
   setupDisks();
@@ -111,8 +111,6 @@ void OperatingSystem::IOQueries() {
   numberOfPrinters_ = queryHelper(userInput, number);
 }
 
-// May to have implement queryHelper as recursive
-
 int OperatingSystem::queryHelper(string& userInput, int& number) {
   while (getline(cin, userInput)) {
     try {
@@ -139,7 +137,7 @@ int OperatingSystem::queryHelper(string& userInput, int& number) {
   }
 }
 
-/* IO DEVICE SETUP */
+/* IO Device Functions */
 
 void OperatingSystem::setupPrinters() { 
   Printer *pointer = nullptr;
@@ -162,8 +160,6 @@ void OperatingSystem::setupDisks() {
 
   pointer = nullptr;
 }
-
-/* IO DEVICE SETUP */
 
 void OperatingSystem::listen() {
   cout << "[os] Listening for user commands. Enter exit() to terminate program.\n>\t";
@@ -200,8 +196,8 @@ void OperatingSystem::listen() {
 }
 
 void OperatingSystem::commandParse(string (&command) [4], string& typeOf) {
-  // Later implement something that checks if command[0] is a number, or string -
-  // if not it lists commands! 
+  
+  /* Command with two parameters */
 
   if (typeOf == "twoParam") {
     
@@ -210,7 +206,7 @@ void OperatingSystem::commandParse(string (&command) [4], string& typeOf) {
     } else { twoParamHandle(command); }
   }
 
-  // ONE PARAM BELOW ---------------- Implement HANDLE & FUNCTION
+  /* Command with one parameter */
 
   else if (typeOf == "oneParam") {
     
@@ -335,7 +331,7 @@ void OperatingSystem::commandParse(string (&command) [4], string& typeOf) {
     }
   }
 
-  // NO PARAM BELOW ---------------- Implement HANDLE & FUNCTION
+  /* Command with no parameters */
 
   else if (typeOf == "noParam") {
     
@@ -345,11 +341,8 @@ void OperatingSystem::commandParse(string (&command) [4], string& typeOf) {
 
     else {
       terminateProcess();
-      // scheduler_.readyQueueSnapshot();
     }
   }
-
-  // WEIRD Input -----------------
 
   else {
     cout << "[os] Invalid command. Whitespace is not allowed before commands.\n";
@@ -404,11 +397,10 @@ void OperatingSystem::twoParamHandle(string (&command) [4]) {
 }
 
 void OperatingSystem::scheduleProcess(ProcessNode* process) {
-  if (process == nullptr) { /* Can't schedule process that if no memory available. */ }
+  if (process == nullptr) { /* Can't schedule process: no memory available. */ }
   
   else {
     scheduler_.eval(process);
-    // scheduler_.readyQueueSnapshot();
   }
 }
 
@@ -425,7 +417,7 @@ void OperatingSystem::terminateProcess() {
   }
 }
 
-/* IO Functions */
+/* IO Device Functions */
 
 void OperatingSystem::processUsingCPURequestsPrinter(int number) {
   ProcessNode *processPtr = scheduler_.toIODevice();
@@ -433,24 +425,17 @@ void OperatingSystem::processUsingCPURequestsPrinter(int number) {
   if (processPtr == nullptr) { /* NO PROCESS USING CPU: IGNORE */ }
 
   else if (processPtr != nullptr) {
-    // cout << "printer # " << number << endl;
     printers_.at(number).push(processPtr);     
-    // cout << *processPtr << endl;
-    
-    // printerQueueSnapshot();
   }
 }
 
 void OperatingSystem::printerRequestComplete(int number) {
   if (!printers_.at(number).isEmpty()) {
-    // cout << "Hello printer " << number << endl;
-    
     ProcessNode *process = nullptr;
 
     /* Step 1: Point to process and pop nullptr from printer queue */
 
     process = printers_.at(number).processUsingPrinter();
-    // cout << "Process to remove from printer " << *process << endl;
 
     /* in pop function, set pointer to nullptr */
     printers_.at(number).pop();
@@ -458,8 +443,6 @@ void OperatingSystem::printerRequestComplete(int number) {
     //  Step 2: Let scheduler evaluate and push to either CPU or queue 
 
     scheduler_.eval(process);
-    // scheduler_.readyQueueSnapshot();
-
   } else {
     cout << "Printer " << number << " is empty." << endl;
   }
@@ -477,10 +460,10 @@ void OperatingSystem::printerQueueSnapshot() {
     } else {
       cout << "Printer #" << i << " :: NOT BUSY\n";
     }
-  }
 
-  cout << setfill('-') << setw(25) << " ";
-  cout << "\n";
+    cout << setfill('-') << setw(25) << " ";
+    cout << "\n";
+  }
 }
 
 void OperatingSystem::processUsingCPURequestsDisk(int number) {
@@ -489,23 +472,17 @@ void OperatingSystem::processUsingCPURequestsDisk(int number) {
   if (processPtr == nullptr) { /* NO PROCESS USING CPU: IGNORE */ }
 
   else if (processPtr != nullptr) {
-    // cout << "disk # " << number << endl;
     disks_.at(number).push(processPtr);     
-    // cout << *processPtr << endl;
-    // printerQueueSnapshot();
   }
 }
 
 void OperatingSystem::diskRequestComplete(int number) {
   if (!disks_.at(number).isEmpty()) {
-    // cout << "Hello disk " << number << endl;
-    
     ProcessNode *process = nullptr;
 
     /* Step 1: Point to process and pop nullptr from printer queue */
 
     process = disks_.at(number).processUsingDisk();
-    // cout << "Process to remove from disk " << *process << endl;
 
     /* in pop function, set pointer to nullptr */
     disks_.at(number).pop();
@@ -513,7 +490,6 @@ void OperatingSystem::diskRequestComplete(int number) {
     //  Step 2: Let scheduler evaluate and push to either CPU or queue 
 
     scheduler_.eval(process);
-    // scheduler_.readyQueueSnapshot();
 
   } else {
     cout << "Disk " << number << " is empty." << endl;
@@ -531,10 +507,10 @@ void OperatingSystem::diskQueueSnapshot() {
     } else {
       cout << "Disk #" << i << " :: NOT BUSY\n";
     }
-  }
 
-  cout << setfill('-') << setw(25) << " ";
-  cout << "\n\n";
+    cout << setfill('-') << setw(25) << " ";
+    cout << "\n";
+  }
 }
 
 void OperatingSystem::printIOSnapshot() {
@@ -548,4 +524,6 @@ void OperatingSystem::printIOSnapshot() {
 
   printerQueueSnapshot();
   diskQueueSnapshot();
+
+  cout << "\n";
 }
